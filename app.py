@@ -24,7 +24,7 @@ def list_users():
     return render_template("list.html", users=users)
 
 
-@app.post("/")
+@app.post("/add_user")
 def add_user():
     """Add pet and redirect to list."""
 
@@ -38,6 +38,12 @@ def add_user():
 
     return redirect(f"/{user.id}")
 
+
+@app.get("/add_user")
+def add_user():
+    """shows add user form"""
+
+    return render_template('add_user_form.html')
 
 @app.get("/<user_id>")
 def show_user(user_id):
