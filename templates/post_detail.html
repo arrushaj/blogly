@@ -5,8 +5,13 @@
 
 <p>{{ post.content }}</p>
 
-<p><i>By {{ post.user }}</i></p>
+<p><i>By {{ post.user.first_name }} {{ post.user.last_name }}</i></p>
 
-
+<form method="GET" action="/posts/{{ post.id }}/edit">
+<a href="/users/{{ post.user.id  }}">Cancel</a>
+<button>Edit</button>
+<button>Delete</button>
+<!-- ASK ABOUT THIS -->
+</form>
 
 {% endblock %}

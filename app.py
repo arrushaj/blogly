@@ -113,12 +113,15 @@ def add_new_post(user_id):
     title = request.form['title']
     content = request.form['content']
     created_at = date.today()
+
     new_post = Post(user_id=user.id, title=title, content=content, created_at=created_at)
-    post_id = new_post.id
+
+    db.session.add(new_post)
     user.posts.append(new_post)
     db.session.commit()
-    # TODO: add breakpoint here and start looking at bug.
-    # post_id returning none
+
+    post_id = new_post.id
+
     return redirect(f"/posts/{post_id}")
 
 
@@ -129,4 +132,12 @@ def show_post(post_id):
     post = Post.query.get_or_404(post_id)
 
     return render_template('post_detail.html', post=post)
+
+@app.get("/posts/<int:post_id>/edit")
+def edit_post(post_id):
+    """Show edit post form"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template("post_edit_form.html", post=post)
 
