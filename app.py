@@ -37,7 +37,7 @@ def add_user():
     last_name = request.form['last_name']
     image_url = request.form['image_url']
 
-    if image_url is None:
+    if image_url is '':
         image_url = "https://rithmapp.s3-us-west-2.amazonaws.com/assets/meet-the-instructor-joel-burton-0.jpg"
 
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
@@ -84,8 +84,9 @@ def edit_user(user_id):
 def delete_user(user_id):
     """Delete user"""
 
-    user = User.query.get_or_404(int(user_id))
-    user.query.delete()
+
+    User.query.filter(User.id==user_id).delete()
+    # user.query.delete() #TODO: WHY WASNT THIS WORKING
 
     db.session.commit()
 
