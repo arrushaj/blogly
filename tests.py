@@ -2,9 +2,10 @@ from unittest import TestCase
 
 from app import app, db
 from models import DEFAULT_IMAGE_URL, User, connect_db
+# from models import DEFAULT_IMAGE_URL, User, connect_db
 
 # Let's configure our app to use a different database for tests
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly_test"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly"
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -18,6 +19,7 @@ app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 
 connect_db(app)
 
+# might need push context here
 db.drop_all()
 db.create_all()
 
@@ -67,3 +69,32 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+
+
+    def test_post_new_user(self):
+        with self.client as c:
+            d = {"first_name": "test2_first", "last_name": "test2_last", "image_url": ''}
+            resp = c.post("/users/new", data=d, follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("<h1>test2_first test2_last</h1>", html)
+            # self.assertEqual(resp.location, f'/users/{self.user_id}')
+
+    def test_get_new_user(self):
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("test1_first", html)
+
+
+    def test_get_edit_user(self):
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}/edit")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn('<label for="first_name">First Name</label>', html)
+
+""" TODO: doc strings need to beadded """
+""" NOTES: dont tests for assertEqual <html tags>. can be dicey with testing """
+

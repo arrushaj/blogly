@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <img src= "{{ user.image_url }}" alt="">
-<h1> {{ user.first_name }} {{ user.last_name }} </h1>
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
 <form action='/users/{{user.id}}/edit'>
   <button type="submit">Edit</button>

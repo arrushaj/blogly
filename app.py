@@ -1,7 +1,8 @@
 """Blogly application."""
 
 from flask import Flask, request, redirect, render_template
-from models import db, connect_db, User
+from models import db, connect_db, User, DEFAULT_IMAGE_URL
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -35,10 +36,8 @@ def add_user():
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    image_url = request.form['image_url']
+    image_url = request.form['image_url'] or DEFAULT_IMAGE_URL
 
-    if image_url is '':
-        image_url = "https://rithmapp.s3-us-west-2.amazonaws.com/assets/meet-the-instructor-joel-burton-0.jpg"
 
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
     db.session.add(user)
@@ -53,11 +52,13 @@ def show_add_user():
 
     return render_template('add_user_form.html')
 
-@app.get("/users/<user_id>")
+@app.get("/users/<int:user_id>")
+# @app.get("/users/<user_id>")
 def show_user(user_id):
     """Show info on a single user."""
 
-    user = User.query.get_or_404(int(user_id))
+    user = User.query.get_or_404(user_id)
+    # user = User.query.get_or_404(int(user_id))
     return render_template("user_detail.html", user=user)
 
 @app.get("/users/<user_id>/edit")
@@ -78,15 +79,15 @@ def edit_user(user_id):
 
     db.session.commit()
 
-    return render_template(f'/users/{user_id}')
+    return redirect(f'/users/{user_id}')
 
 @app.post("/users/<user_id>/delete")
 def delete_user(user_id):
     """Delete user"""
 
-
     User.query.filter(User.id==user_id).delete()
-    # user.query.delete() #TODO: WHY WASNT THIS WORKING
+    # user = got here
+    # db.session.delete(user) # need to get user
 
     db.session.commit()
 
