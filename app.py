@@ -1,7 +1,8 @@
 """Blogly application."""
 
 from flask import Flask, request, redirect, render_template
-from models import db, connect_db, User, DEFAULT_IMAGE_URL
+from models import db, connect_db, User, Post,DEFAULT_IMAGE_URL
+from datetime import date
 
 
 app = Flask(__name__)
@@ -99,11 +100,33 @@ def show_post_form(user_id):
     user = User.query.get_or_404(int(user_id))
     first_name = user.first_name
     last_name = user.last_name
-    full_name = first_name + last_name
+    full_name = f"{first_name} {last_name}"
 
-    return render_template("new_post.html", full_name=full_name)
+    return render_template("new_post_form.html", full_name=full_name, user=user)
 
 @app.post("/users/<user_id>/posts/new")
-def add_new_post():
+def add_new_post(user_id):
     """Handle add form; add post and redirect to the user detail page."""
+
+    user = User.query.get_or_404(int(user_id))
+
+    title = request.form['title']
+    content = request.form['content']
+    created_at = date.today()
+    new_post = Post(user_id=user.id, title=title, content=content, created_at=created_at)
+    post_id = new_post.id
+    user.posts.append(new_post)
+    db.session.commit()
+    # TODO: add breakpoint here and start looking at bug.
+    # post_id returning none
+    return redirect(f"/posts/{post_id}")
+
+
+@app.get("/posts/<int:post_id>")
+def show_post(post_id):
+    """Shows a post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('post_detail.html', post=post)
 
