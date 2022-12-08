@@ -92,3 +92,18 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect("/users")
+
+@app.get("/users/<user_id>/posts/new")
+def show_post_form(user_id):
+    """Shows post form to add new post"""
+    user = User.query.get_or_404(int(user_id))
+    first_name = user.first_name
+    last_name = user.last_name
+    full_name = first_name + last_name
+
+    return render_template("new_post.html", full_name=full_name)
+
+@app.post("/users/<user_id>/posts/new")
+def add_new_post():
+    """Handle add form; add post and redirect to the user detail page."""
+

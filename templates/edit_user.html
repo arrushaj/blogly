@@ -10,16 +10,10 @@
   <label for="image_url">Image URL</label>
   <input name='image_url' type="text" value='{{ user.image_url}}'>
 
-
+  <button method="GET" action='/users/{{user.id}}'>Cancel</button>
   <button type='submit'>Save</button>
-  <!-- todo: look at form action and method -->
-  <!-- can have cancel button as a link, or have cancel button with own method
-    and post in <button> tag ex: <button method="GET" action="blahblah">-->
+
+
 </form>
 
-<form action='/users/{{user.id}}'>
-  <button type='submit'>Cancel</button>
-</form>
-
-
-{% endblock%}
+{% endblock %}

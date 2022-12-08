@@ -63,6 +63,7 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
 
     def test_list_users(self):
+        """Tests /users route"""
         with self.client as c:
             resp = c.get("/users")
             self.assertEqual(resp.status_code, 200)
@@ -72,6 +73,7 @@ class UserViewTestCase(TestCase):
 
 
     def test_post_new_user(self):
+        """Tests adding new user with /users/new"""
         with self.client as c:
             d = {"first_name": "test2_first", "last_name": "test2_last", "image_url": ''}
             resp = c.post("/users/new", data=d, follow_redirects=True)
@@ -81,6 +83,7 @@ class UserViewTestCase(TestCase):
             # self.assertEqual(resp.location, f'/users/{self.user_id}')
 
     def test_get_new_user(self):
+        """Tests getting user information"""
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}")
             self.assertEqual(resp.status_code, 200)
@@ -89,6 +92,7 @@ class UserViewTestCase(TestCase):
 
 
     def test_get_edit_user(self):
+        """Tests getting user edit form"""
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}/edit")
             self.assertEqual(resp.status_code, 200)
