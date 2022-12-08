@@ -7,9 +7,13 @@
   <input name='first_name' type="text" value='{{ user.first_name}}'>
   <label for="last_name">Last Name</label>
   <input type="text" value='{{ user.last_name}}' value='{{ user.last_name}}'>
+  <label for="image_url">Image URL</label>
+  <input name='image_url' type="text" value='{{ user.image_url}}'>
 
+  <form action='/users/{{user.id}}'>
+    <button>Cancel</button>
+  </form>
 
-  <button action='/users/{{user.id}}'>Cancel</button>
   <button type='submit'>Save</button>
 </form>
 

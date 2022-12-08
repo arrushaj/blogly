@@ -30,5 +30,6 @@ class User(db.Model):
 
     image_url = db.Column(
         db.String(100),
-        nullable=True
+        nullable=True,
+        default="https://rithmapp.s3-us-west-2.amazonaws.com/assets/meet-the-instructor-joel-burton-0.jpg"
     )

@@ -15,39 +15,78 @@ from flask_debugtoolbar import DebugToolbarExtension
 app.config['SECRET_KEY'] = "SECRET!"
 debug = DebugToolbarExtension(app)
 
-
 @app.get("/")
+def redirect_users():
+    """Redirect to list of users"""
+
+    return redirect("/users")
+
+@app.get("/users")
 def list_users():
-    """List pets and show add form."""
+    """List users and show add form."""
 
     users = User.query.all()
     return render_template("list.html", users=users)
 
 
-@app.post("/add_user")
+@app.post("/users/new")
 def add_user():
-    """Add pet and redirect to list."""
+    """Add user and redirect to list."""
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
     image_url = request.form['image_url']
 
+    if image_url is None:
+        image_url = "https://rithmapp.s3-us-west-2.amazonaws.com/assets/meet-the-instructor-joel-burton-0.jpg"
+
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
     db.session.add(user)
     db.session.commit()
 
-    return redirect(f"/{user.id}")
+    return redirect(f"/users/{user.id}")
 
 
-@app.get("/add_user")
-def add_user():
+@app.get("/users/new")
+def show_add_user():
     """shows add user form"""
 
     return render_template('add_user_form.html')
 
-@app.get("/<user_id>")
+@app.get("/users/<user_id>")
 def show_user(user_id):
     """Show info on a single user."""
 
     user = User.query.get_or_404(int(user_id))
-    return render_template("detail.html", user=user)
+    return render_template("user_detail.html", user=user)
+
+@app.get("/users/<user_id>/edit")
+def edit_user_form(user_id):
+    """Show edit user form"""
+
+    user = User.query.get_or_404(int(user_id))
+    return render_template("edit_user.html", user=user)
+
+@app.post("/users/<user_id>/edit")
+def edit_user(user_id):
+    """Edit user"""
+
+    user = User.query.get_or_404(int(user_id))
+    user.first_name = request.form["first_name"]
+    user.last_name = request.form["last_name"]
+    user.image_url = request.form["image_url"]
+
+    db.session.commit()
+
+    return render_template(f'/users/{user_id}')
+
+@app.post("/users/<user_id>/delete")
+def delete_user(user_id):
+    """Delete user"""
+
+    user = User.query.get_or_404(int(user_id))
+    user.query.delete()
+
+    db.session.commit()
+
+    return redirect("/users")
