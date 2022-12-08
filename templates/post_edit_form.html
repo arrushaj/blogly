@@ -5,11 +5,11 @@
 
 <form method="POST" action="/posts/{{ post.id }}/edit">
   <label>Title</label>
-  <input type="text" value="{{ post.title }}">
+  <input name="title" type="text" value="{{ post.title }}">
   <label>Content</label>
-  <input type="text" value="{{ post.content }}">
+  <input name="content" type="text" value="{{ post.content }}">
 
-  <a href='/posts/{{ post.id }}'>Cancel</a>
+  <button type="submit" formmethod="GET" formaction="/posts/{{ post.id }}">Cancel</button>
   <button type="submit">Edit</button>
 
 </form>

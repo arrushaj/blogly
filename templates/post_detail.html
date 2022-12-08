@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <h1>{{ post.title }}</h1>
 
@@ -8,10 +7,9 @@
 <p><i>By {{ post.user.first_name }} {{ post.user.last_name }}</i></p>
 
 <form method="GET" action="/posts/{{ post.id }}/edit">
-<a href="/users/{{ post.user.id  }}">Cancel</a>
-<button>Edit</button>
-<button>Delete</button>
-<!-- ASK ABOUT THIS -->
+  <button type="submit" formmethod="GET" formaction="/users/{{ post.user.id  }}">Cancel</button>
+  <button name="submit" type="submit">Edit</button>
+  <button type="submit" formmethod="POST" formaction="/posts/{{ post.id }}/delete">Delete</button>
 </form>
 
 {% endblock %}
