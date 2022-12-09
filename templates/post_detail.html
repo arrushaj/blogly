@@ -7,7 +7,7 @@
 <p><i>By {{ post.user.first_name }} {{ post.user.last_name }}</i></p>
 
 <form method="GET" action="/posts/{{ post.id }}/edit">
-  <button type="submit" formmethod="GET" formaction="/users/{{ post.user.id  }}">Cancel</button>
+  <button type="submit" formmethod="GET" formaction="/users/{{ post.user.id }}">Cancel</button>
   <button name="submit" type="submit">Edit</button>
   <button type="submit" formmethod="POST" formaction="/posts/{{ post.id }}/delete">Delete</button>
 </form>

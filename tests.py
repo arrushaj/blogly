@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User, connect_db
+from models import DEFAULT_IMAGE_URL, User, Post, connect_db
 # from models import DEFAULT_IMAGE_URL, User, connect_db
 
 # Let's configure our app to use a different database for tests
@@ -50,13 +50,22 @@ class UserViewTestCase(TestCase):
         )
 
         db.session.add_all([test_user, second_user])
-        db.session.commit()
 
+        test_post = Post(
+            user_id = test_user.id,
+            title="test_title",
+            content="test_content"
+        )
+
+        db.session.add(test_post)
+
+        db.session.commit()
         # We can hold onto our test_user's id by attaching it to self (which is
         # accessible throughout this test class). This way, we'll be able to
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+        self.post_id = test_post.id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -99,6 +108,39 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn('<label for="first_name">First Name</label>', html)
 
-""" TODO: doc strings need to beadded """
+    def test_show_post_form(self):
+        """Tests showing the form for adding new post."""
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}/posts/new")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn('Add post for test1_first test1_last', html)
+
+    def test_submit_post_form(self):
+        """Tests submitting post form"""
+        with self.client as c:
+            d = {"title": "blah", "content": "blah"}
+            resp = c.post(f"/users/{self.user_id}/posts/new", data=d, follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("<h1>blah</h1>", html)
+
+    def test_post_detail(self):
+        """Tests accessing post details"""
+        with self.client as c:
+            resp = c.get(f"/posts/{self.post_id}")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("<h1>test_title</h1>", html)
+
+    def test_delete_post(self):
+        """Tests deleting post"""
+        with self.client as c:
+            resp = c.post(f"/posts/{self.post_id}/delete", follow_redirects=True)
+            print("STUFF", f"/posts/{self.post_id}/delete")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("<h1>test1_first test1_last</h1>", html)
+
 """ NOTES: dont tests for assertEqual <html tags>. can be dicey with testing """
 

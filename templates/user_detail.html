@@ -10,6 +10,10 @@
   <button type="submit">Delete</button>
 </form>
 
+<form action="/users/{{user.id}}/posts/new">
+  <button type="submit">Add Post</button>
+</form>
+
 <h3>Posts</h3>
 <ul>
   {% for post in user.posts %}

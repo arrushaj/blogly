@@ -61,18 +61,18 @@ def show_user(user_id):
     user = User.query.get_or_404(user_id)
     return render_template("user_detail.html", user=user)
 
-@app.get("/users/<user_id>/edit")
+@app.get("/users/<int:user_id>/edit")
 def edit_user_form(user_id):
     """Show edit user form"""
 
-    user = User.query.get_or_404(int(user_id))
+    user = User.query.get_or_404(user_id)
     return render_template("edit_user.html", user=user)
 
-@app.post("/users/<user_id>/edit")
+@app.post("/users/<int:user_id>/edit")
 def edit_user(user_id):
     """Edit user"""
 
-    user = User.query.get_or_404(int(user_id))
+    user = User.query.get_or_404(user_id)
     user.first_name = request.form["first_name"]
     user.last_name = request.form["last_name"]
     user.image_url = request.form["image_url"]
@@ -91,10 +91,10 @@ def delete_user(user_id):
 
     return redirect("/users")
 
-@app.get("/users/<user_id>/posts/new")
+@app.get("/users/<int:user_id>/posts/new")
 def show_post_form(user_id):
     """Shows post form to add new post"""
-    user = User.query.get_or_404(int(user_id))
+    user = User.query.get_or_404(user_id)
     first_name = user.first_name
     last_name = user.last_name
     full_name = f"{first_name} {last_name}"
@@ -106,14 +106,11 @@ def add_new_post(user_id):
     """Creates new post"""
 
     user = User.query.get_or_404(user_id)
-    # user = User.query.get_or_404(int(user_id))
 
     title = request.form['title']
     content = request.form['content']
-    created_at = date.today() # TODO: HANDLE THIS IN MODELS
 
     new_post = Post(user_id=user.id, title=title, content=content)
-    # new_post = Post(user_id=user.id, title=title, content=content, created_at=created_at)
 
     db.session.add(new_post)
     user.posts.append(new_post)

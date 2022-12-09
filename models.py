@@ -66,6 +66,5 @@ class Post(db.Model):
     created_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=db.func.now() # TODO: FIGURE OUT HOW TO MAKE THIS WORK. MAYBE db.func().now
-        # drop all, create teables to apply again in DB
+        default=db.func.now()
     )
