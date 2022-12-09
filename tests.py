@@ -5,7 +5,7 @@ from models import DEFAULT_IMAGE_URL, User, Post, connect_db
 # from models import DEFAULT_IMAGE_URL, User, connect_db
 
 # Let's configure our app to use a different database for tests
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly_test"
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -33,6 +33,8 @@ class UserViewTestCase(TestCase):
         # As you add more models later in the exercise, you'll want to delete
         # all of their records before each test just as we're doing with the
         # User model below.
+
+        Post.query.delete()
         User.query.delete()
 
         self.client = app.test_client()
@@ -50,6 +52,7 @@ class UserViewTestCase(TestCase):
         )
 
         db.session.add_all([test_user, second_user])
+        db.session.commit() # !must be committed first to create a user to have user id for creating a post
 
         test_post = Post(
             user_id = test_user.id,

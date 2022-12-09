@@ -50,7 +50,8 @@ class Post(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id')
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=True
     )
 
     title = db.Column(
